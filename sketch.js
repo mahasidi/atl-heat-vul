@@ -16,63 +16,125 @@ const MINIMAL = { bg: "#EAEAEA", fan: "#FF3366", jacksNeeded: 5  };
 const MEDIUM   = { bg: "#FF9F1C", fan: "#1C6EFF", jacksNeeded: 10 };
 const HIGH     = { bg: "#E63946", fan: "#36E6D9", jacksNeeded: 20 };
 
+let sounds = {};
+
 const transcripts = {
-  "OAKCLIFF":      { context: "New resident calling a friend · Est. 15 seconds", lines: [
-    { speaker: "CALLER", text: "Honestly my first Atlanta summer and I don't understand what people complain about. My building stays cool, I go outside, it's hot but I'm fine. I've never even thought about it." }
-  ]},
-  "KINGS FOREST":  { context: "Older resident calling their adult child · Est. 15 seconds", lines: [
-    { speaker: "CALLER", text: "I just got back from my walk. Those big old trees on the main stretch keep it so cool, I forget it's August out here. You should come visit before summer's over." }
-  ]},
-  "ORMEWOOD PK":   { context: "Teen calling a friend · Est. 15 seconds", lines: [
-    { speaker: "CALLER", text: "Hey you want to go to the park by the creek later?" },
-    { speaker: "FRIEND", text: "It's supposed to be 94 today." },
-    { speaker: "CALLER", text: "Just bring water, there's plenty of shade out there, we'll be fine." }
-  ]},
-  "PLEASANT HILL": { context: "Friend calling friend · Est. 10 seconds", lines: [
-    { speaker: "CALLER", text: "Hey! We're doing a neighborhood cookout Saturday, come through. And don't worry about the heat, if it gets too much we'll just head inside. The house stays cool." }
-  ]},
-  "GEORGIA TECH":  { context: "Facilities manager leaving a voicemail · Est. 15 seconds", lines: [
-    { speaker: "CALLER", text: "HVAC upgrade is done across the whole engineering quad. Walked through at noon today, felt like a different city in there. Students won't feel the summer at all." }
-  ]},
-  "MT. PARAN":     { context: "Resident calling a neighbor · Est. 15 seconds", lines: [
-    { speaker: "CALLER",   text: "Hey, you got a fan I can borrow? My old AC is working overtime today, I've been feeling uncomfortable all day." },
-    { speaker: "NEIGHBOR", text: "Yeah of course, come grab it." }
-  ]},
-  "EAST ATLANTA":  { context: "Resident calling 311 · Est. 20 seconds", lines: [
-    { speaker: "OPERATOR", text: "Thank you for calling 311, how can I help you?" },
-    { speaker: "CALLER",   text: "The cooling center on Gresham is packed every afternoon. People coming in just to sit somewhere that isn't dangerous. We need more space before somebody collapses." }
-  ]},
-  "KIRKWOOD":      { context: "Longtime resident calling a community aid line · Est. 20 seconds", lines: [
-    { speaker: "OPERATOR", text: "Hi, thank you for calling Kirkwood Cares, how can I help you?" },
-    { speaker: "CALLER",   text: "My bedroom was 91 degrees at midnight. I'm waking up soaked every night. I've lived on this street 47 years and I can't afford to fix my roof. I just need to sleep." }
-  ]},
-  "LINDRIDGE":     { context: "Resident calling Georgia Power · Est. 20 seconds", lines: [
-    { speaker: "REP",    text: "Thank you for calling Georgia Power, how can I assist you today?" },
-    { speaker: "CALLER", text: "My bill has been climbing every summer for three years. This month I can barely cover it and I have children in this house. What is going on?" }
-  ]},
-  "CASCADE RD":    { context: "Resident calling apartment management · Est. 20 seconds", lines: [
-    { speaker: "CALLER",   text: "My AC has been out for eight days. Last night it was 88 degrees inside at 11pm and my kid couldn't sleep. Eight days." },
-    { speaker: "MANAGER",  text: "We're waiting on a part, it'll come in next week. Hold tight." }
-  ]},
-  "GREENBRIAR":    { context: "Resident calling 311 · Est. 25 seconds", lines: [
-    { speaker: "OPERATOR", text: "Thank you for calling 311, how can I help you?" },
-    { speaker: "CALLER",   text: "With this heat wave, this summer has been a nightmare. My neighbor's kid has been in and out of the hospital with her asthma and my elderly neighbor collapsed from heat exhaustion last week. Is there anything, any funding, any support at all?" }
-  ]},
-  "BANKHEAD":      { context: "Adult child calling a sibling · Est. 20 seconds", lines: [
-    { speaker: "CALLER",  text: "I just got to his house. He's been in one room all day with the door closed trying to keep the cool air in. It's one room. The rest of the house is suffocating." },
-    { speaker: "SIBLING", text: "We need to start putting money together for another unit before this gets worse." }
-  ]},
-  "WASHINGTON PK": { context: "Family member calling a relative · Est. 20 seconds", lines: [
-    { speaker: "CALLER", text: "Mama, Ann told me you've been turning the AC off because the bill got too high. You cannot do that in this heat. Please turn it back on." },
-    { speaker: "MAMA",   text: "I know it's hot baby, but I still got groceries to buy this week." }
-  ]},
-  "ENGLISH AVE":   { context: "Resident calling a family member · Est. 20 seconds", lines: [
-    { speaker: "CALLER", text: "It's 4pm and I just checked on Grandma. She had a cold wet towel on her neck and she was sitting completely still trying not to generate any body heat. It's 94 degrees in her living room. We need to get her out of here." }
-  ]},
-  "PITTSBURGH":    { context: "Neighbor calling 911 · Est. 25 seconds", lines: [
-    { speaker: "DISPATCHER", text: "911 what's your emergency?" },
-    { speaker: "CALLER",     text: "I need help, my neighbor Patricia, she's 65 and lives alone. I came to check on her and she's not responding. It's like an oven in there. We've been complaining about this neighborhood for years, nothing ever changes. Oh my god, please hurry." }
-  ]}
+  "OAKCLIFF": {
+    context: "New resident calling a friend · Est. 15 seconds",
+    audio: "OAKCLIFF",
+    lines: [
+      { speaker: "CALLER", text: "Honestly, it's my first Atlanta summer and I don't understand what people complain about. My building stays cool, I go outside, it's hot but I'm fine. I've never even thought about it.", delay: 0 }
+    ]
+  },
+  "KINGS FOREST": {
+    context: "Older resident calling their adult child · Est. 15 seconds",
+    audio: "KINGS FOREST",
+    lines: [
+      { speaker: "CALLER", text: "Yo, I just got back from my walk. Those big old trees on the main stretch keep it so cool, I forget it's August out here for real. You should come visit before summer's even over man.", delay: 0 }
+    ]
+  },
+  "ORMEWOOD PK": {
+    context: "Teen calling a friend · Est. 15 seconds",
+    audio: "ORMEWOOD PARK",
+    lines: [
+      { speaker: "CALLER", text: "Hey you want to go to the park by the creek later?", delay: 0 },
+      { speaker: "FRIEND", text: "It's supposed to be 94 today.", delay: 2400 },
+      { speaker: "CALLER", text: "Just bring water, there's plenty of shade out there, we'll be fine.", delay: 4200 }
+    ]
+  },
+  "PLEASANT HILL": {
+    context: "Friend calling friend · Est. 10 seconds",
+    audio: "PLEASANT HILL",
+    lines: [
+      { speaker: "CALLER", text: "Hey! We're doing a neighborhood cookout Saturday, come through. And don't worry about the heat, if it gets too much we'll just head inside. The house stays cool.", delay: 0 }
+    ]
+  },
+  "GEORGIA TECH": {
+    context: "Facilities manager leaving a voicemail · Est. 15 seconds",
+    audio: "GEORGIA TECH",
+    lines: [
+      { speaker: "CALLER", text: "Hey, just calling to let you know the HVAC upgrade is done across the whole engineering quad. Walked through at noon today, felt like a different city in there. Students won't feel the summer at all. Let me know if there's anything else that's needed.", delay: 0 }
+    ]
+  },
+  "MT. PARAN": {
+    context: "Resident calling a neighbor · Est. 15 seconds",
+    audio: "MT. PARAN",
+    lines: [
+      { speaker: "CALLER",   text: "Hey, you got a fan I can borrow? My old AC is working overtime today.", delay: 0 },
+      { speaker: "NEIGHBOR", text: "Yeah of course, come grab it.", delay: 3600 }
+    ]
+  },
+  "EAST ATLANTA": {
+    context: "Resident calling 311 · Est. 20 seconds",
+    audio: "EAST ATLANTA",
+    lines: [
+      { speaker: "OPERATOR", text: "Thank you for calling 311, how can I help you?", delay: 0 },
+      { speaker: "CALLER",   text: "The cooling center on Gresham is packed every afternoon. People coming in just to sit somewhere that isn't dangerous. We need more space before somebody collapses.", delay: 3500 }
+    ]
+  },
+  "KIRKWOOD": {
+    context: "Longtime resident calling a community aid line · Est. 20 seconds",
+    audio: "KIRKWOOD",
+    lines: [
+      { speaker: "OPERATOR", text: "Hi, thank you for calling Kirkwood Cares, how can I help you?", delay: 0 },
+      { speaker: "CALLER",   text: "My bedroom was 91 degrees at midnight. I'm waking up soaked every night. I've lived on this street 47 years and I can't afford to fix my roof. I just need to sleep.", delay: 4300 }
+    ]
+  },
+  "LINDRIDGE": {
+    context: "Resident calling Georgia Power · Est. 20 seconds",
+    audio: "LINDRIDGE",
+    lines: [
+      { speaker: "REP",    text: "Thank you for calling Georgia Power, how can I assist you today?", delay: 0 },
+      { speaker: "CALLER", text: "My bill has been climbing every summer for three years. This month I can barely cover it and I have children in this house. What is going on?", delay: 4600 }
+    ]
+  },
+  "CASCADE RD": {
+    context: "Resident calling apartment management · Est. 20 seconds",
+    audio: "CASCADE ROAD",
+    lines: [
+      { speaker: "CALLER",   text: "My AC has been out for eight days. Last night it was 88 degrees inside at 11pm and my kid could not sleep. Eight days.", delay: 0 },
+      { speaker: "MANAGER", text: "We're waiting on a part, it'll come in next week. Hold tight.", delay: 9600 }
+    ]
+  },
+  "GREENBRIAR": {
+    context: "Resident calling 311 · Est. 25 seconds",
+    audio: "GREENBRIAR",
+    lines: [
+      { speaker: "OPERATOR", text: "Thank you for calling 311, how can I help you?", delay: 0 },
+      { speaker: "CALLER",   text: "With this heat wave, this summer has been a nightmare. My neighbor's kid has been in and out of the hospital with her asthma and my elderly neighbor collapsed from heat exhaustion last week. Is there anything, any funding, any support at all?", delay: 3300 }
+    ]
+  },
+  "BANKHEAD": {
+    context: "Adult child calling a sibling · Est. 20 seconds",
+    audio: "BANKHEAD",
+    lines: [
+      { speaker: "CALLER",  text: "I just got to his house. He's been in one room all day with the door closed trying to keep the cool air in. It's one room. The rest of the house is suffocating.", delay: 0 },
+      { speaker: "SIBLING", text: "We need to start putting money together for another unit before this gets worse.", delay: 8900 }
+    ]
+  },
+  "WASHINGTON PK": {
+    context: "Family member calling a relative · Est. 20 seconds",
+    audio: "WASHINGTON PARK",
+    lines: [
+      { speaker: "CALLER", text: "Mama, Ann told me you've been turning the AC off because the bill got too high. You cannot do that in this heat. Please turn it back on.", delay: 0 },
+      { speaker: "MAMA",   text: "You know, I know it's hot, but I still got groceries to buy this week.", delay: 7400 }
+    ]
+  },
+  "ENGLISH AVE": {
+    context: "Resident calling a family member · Est. 20 seconds",
+    audio: "ENGLISH AVENUE",
+    lines: [
+      { speaker: "CALLER", text: "I just checked on Grandma. She had a cold wet towel on her neck and was trying to sit completely still to not generate any body heat. It's 94 degrees in her living room, I don't even know what to do.", delay: 0 }
+    ]
+  },
+  "PITTSBURGH": {
+    context: "Neighbor calling 911 · Est. 25 seconds",
+    audio: "PITTSBURGH",
+    lines: [
+      { speaker: "DISPATCHER", text: "911 what's your emergency?", delay: 0 },
+      { speaker: "CALLER",     text: "I need help, my neighbor Patricia, she's 65 and lives alone. I came to check on her and she's not responding. It's like an oven in there. We've been complaining about this neighborhood for years, nothing ever changes. Oh my god, please hurry.", delay: 2600 }
+    ]
+  }
 };
 
 const neighborhoods = [
@@ -107,8 +169,15 @@ for (let n of neighborhoods) {
 let personStates = {};
 let cellW, cellH;
 let fullscreenCell = null;
-let completionQueue = []; // queue for simultaneous completions
+let completionQueue = [];
 let pg;
+
+function preload() {
+  for (let key in transcripts) {
+    let t = transcripts[key];
+    sounds[key] = loadSound("Phonecalls/" + t.audio + ".mp3");
+  }
+}
 
 function setup() {
   createCanvas(floor(CANVAS_W * scaleFactor), floor(CANVAS_H * scaleFactor));
@@ -158,10 +227,8 @@ function getKeypoints(pose) {
 
 function draw() {
   pulseT += 0.05;
-
   pg.background(0);
 
-  // Update fan physics
   for (let n of neighborhoods) {
     let s = cellStates[n.name];
     if (!s.done) {
@@ -170,14 +237,12 @@ function draw() {
     }
   }
 
-  // Draw grid
   for (let n of neighborhoods) {
     if (!fullscreenCell || fullscreenCell.name !== n.name) {
       drawCell(n);
     }
   }
 
-  // Process poses
   if (!fullscreenCell) {
     let activeIds = new Set(poses.map((_, i) => i));
     for (let id in personStates) {
@@ -200,9 +265,7 @@ function draw() {
     }
   }
 
-  if (fullscreenCell) {
-    drawFullscreen(fullscreenCell);
-  }
+  if (fullscreenCell) drawFullscreen(fullscreenCell);
 
   background(0);
   image(pg, 0, 0, width, height);
@@ -217,7 +280,6 @@ function drawShadow(kps, ps) {
     ["left_hip","left_knee"],["left_knee","left_ankle"],
     ["right_hip","right_knee"],["right_knee","right_ankle"],
   ];
-
   pg.stroke(0, 0, 0, 180);
   pg.strokeWeight(18);
   pg.strokeCap(ROUND);
@@ -233,7 +295,6 @@ function drawShadow(kps, ps) {
     let pulse = sin(pulseT) * 0.5 + 0.5;
     let orbColor = (ps && ps.currentCell) ? ps.currentCell.tier.fan : "#FF3366";
     let oc = color(orbColor);
-
     pg.noStroke();
     pg.fill(red(oc), green(oc), blue(oc), 40 + pulse * 30); pg.circle(hx, hy, 160);
     pg.fill(red(oc), green(oc), blue(oc), 80 + pulse * 40); pg.circle(hx, hy, 110);
@@ -299,13 +360,27 @@ function queueCompletion(n) {
   if (s.done) return;
   s.done = true;
   s.speed = 0;
-
-  // Add to queue. If nothing is playing, start immediately.
   completionQueue.push(n);
-  if (!fullscreenCell) {
-    playNextCompletion();
-  }
+  if (!fullscreenCell) playNextCompletion();
 }
+
+const audioDurations = {
+  "BANKHEAD":      15000,
+  "CASCADE RD":    15000,
+  "EAST ATLANTA":  13000,
+  "ENGLISH AVE":   13000,
+  "GEORGIA TECH":  15000,
+  "GREENBRIAR":    18000,
+  "KINGS FOREST":  10000,
+  "KIRKWOOD":      18000,
+  "LINDRIDGE":     12000,
+  "MT. PARAN":      6000,
+  "OAKCLIFF":      10000,
+  "ORMEWOOD PK":    9000,
+  "PITTSBURGH":    18000,
+  "PLEASANT HILL": 10000,
+  "WASHINGTON PK": 13000,
+};
 
 function playNextCompletion() {
   if (completionQueue.length === 0) return;
@@ -321,12 +396,25 @@ function playNextCompletion() {
 
   s.lineAlphas = tr.lines.map(() => 0);
 
-  let baseDelay = 1200;
+  let expandDuration = 1200;
+
+  // Play audio after expansion
+  if (sounds[n.name] && sounds[n.name].isLoaded()) {
+    setTimeout(() => sounds[n.name].play(), expandDuration);
+  }
+
+  // Schedule transcript lines using exact timestamps
   tr.lines.forEach((line, i) => {
-    setTimeout(() => { s.transcriptLine = i; }, baseDelay + i * 2500);
+    let t = setTimeout(() => {
+      s.transcriptLine = i;
+    }, expandDuration + line.delay);
+    s.transcriptTimers.push(t);
   });
 
-  let shrinkDelay = baseDelay + tr.lines.length * 2500 + 2000;
+  // Shrink after audio finishes + 1 second buffer
+  let audioDur = audioDurations[n.name] || 15000;
+  let shrinkDelay = expandDuration + audioDur;
+
   setTimeout(() => { s.expanding = false; s.shrinking = true; }, shrinkDelay);
   setTimeout(() => {
     s.shrinking = false;
@@ -334,7 +422,6 @@ function playNextCompletion() {
     s.transcriptLine = -1;
     s.lineAlphas = [];
     fullscreenCell = null;
-    // Play next in queue if any
     playNextCompletion();
   }, shrinkDelay + 900);
 }
